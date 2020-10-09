@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	model "github.com/khihadysucahyo/notification-service/models"
 	"github.com/labstack/echo/v4"
@@ -10,8 +11,31 @@ import (
 )
 
 // DevicesList GET
-func (c *Controller) DevicesList(ctx echo.Context) error {
-	return ctx.String(http.StatusOK, "DevicesList")
+func (c *Controller) DevicesList(ctx echo.Context) (err error) {
+	page, _ := strconv.Atoi(ctx.QueryParam("page"))
+	limit, _ := strconv.Atoi(ctx.QueryParam("limit"))
+
+	// Defaults
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 100
+	}
+
+	// Retrieve posts from database
+	devices := []*model.Device{}
+	db := c.DB.Clone()
+	if err = db.DB("notificationservice").C("devices").
+		Find(bson.M{}).
+		Skip((page - 1) * limit).
+		Limit(limit).
+		All(&devices); err != nil {
+		return
+	}
+	defer db.Close()
+
+	return ctx.JSON(http.StatusOK, devices)
 }
 
 // DevicesStore POST
@@ -23,7 +47,7 @@ func (c *Controller) DevicesStore(ctx echo.Context) (err error) {
 	}
 
 	// Validate
-	if d.UserID == "" || d.DeviceToken == "" {
+	if d.UserID == "" || d.Token == "" {
 		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "invalid UserID or DeviceToken"}
 	}
 
