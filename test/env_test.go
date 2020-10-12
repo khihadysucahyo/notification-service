@@ -10,6 +10,6 @@ import (
 func TestEnv(t *testing.T) {
 	err := godotenv.Load("../.env")
 	if err != nil {
-		t.Error("Error loading .env file: ", err)
+		t.Error("Error loading env file: ", err)
 	}
 }
