@@ -6,6 +6,9 @@
 ## explicit
 # github.com/jabardigitalservice/picasso-backend/service-golang v0.0.0-20201007143934-789039ff76c9
 ## explicit
+# github.com/joho/godotenv v1.3.0
+## explicit
+github.com/joho/godotenv
 # github.com/labstack/echo v3.3.10+incompatible
 ## explicit
 # github.com/labstack/echo/v4 v4.1.17
