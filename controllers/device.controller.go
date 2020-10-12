@@ -23,7 +23,7 @@ func (c *Controller) DevicesList(ctx echo.Context) (err error) {
 		limit = 100
 	}
 
-	// Retrieve posts from database
+	// Retrieve devices from database
 	devices := []*model.Device{}
 	db := c.DB.Clone()
 	if err = db.DB("notificationservice").C("devices").
@@ -51,7 +51,7 @@ func (c *Controller) DevicesStore(ctx echo.Context) (err error) {
 		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "invalid UserID or DeviceToken"}
 	}
 
-	// Save user
+	// Save device
 	db := c.DB.Clone()
 	defer db.Close()
 	if err = db.DB("notificationservice").C("devices").Insert(d); err != nil {
@@ -69,10 +69,21 @@ func (c *Controller) DevicesUpdate(ctx echo.Context) error {
 }
 
 // DevicesDetail GET
-func (c *Controller) DevicesDetail(ctx echo.Context) error {
+func (c *Controller) DevicesDetail(ctx echo.Context) (err error) {
 	id := ctx.Param("id")
-	data := fmt.Sprintf("DevicesDetail: %s", id)
-	return ctx.String(http.StatusOK, data)
+
+	// // Retrieve device from database
+	var device model.Device
+	db := c.DB.Clone()
+	if err = db.DB("notificationservice").C("devices").
+		Find(bson.M{"_id": bson.ObjectIdHex(id)}).
+		One(&device); err != nil {
+		return
+	}
+
+	defer db.Close()
+
+	return ctx.JSON(http.StatusOK, device)
 }
 
 // DevicesDelete DELETE
