@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	controller "github.com/khihadysucahyo/notification-service/controllers"
 	"github.com/khihadysucahyo/notification-service/routes"
 	"github.com/khihadysucahyo/notification-service/utils"
@@ -13,6 +15,7 @@ func main() {
 
 	// Database connection
 	uri := "mongodb://" + utils.GetEnv("DB_MONGO_HOST") + ":" + utils.GetEnv("DB_MONGO_PORT")
+	fmt.Println(uri)
 	db, err := mgo.Dial(uri)
 	if err != nil {
 		e.Logger.Fatal(err)

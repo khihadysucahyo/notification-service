@@ -19,6 +19,9 @@ import (
 // WEBRoutes route
 func WEBRoutes(e *echo.Echo) {
 	e.GET("/", func(ctx echo.Context) error {
-		return ctx.String(http.StatusOK, utils.GetEnv("APP_NAME"))
+		return ctx.JSON(http.StatusOK, map[string]interface{}{
+			"APP_NAME": utils.GetEnv("APP_NAME"),
+			"VERSION":  "v0.5",
+		})
 	})
 }

@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  notification-service-mongo:
+    image: mongo:4.4.0
+    ports:
+      - ${DB_MONGO_PORT}:27017
+    restart: always
+    volumes:
+      - mongodb:/data/db
+
+  notification-service-app:
+    build: .
+    environment:
+      DB_MONGO_HOST: notification-service-mongo
+    ports:
+      - 3232:1213
+    restart: always
+    depends_on:
+      - notification-service-mongo
+    # networks:
+    #   - gateway
+
+volumes:
+  mongodb:
+
+# networks:
+#   gateway:
+#     external: true
