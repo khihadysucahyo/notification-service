@@ -10,7 +10,7 @@ services:
       - mongodb:/data/db
 
   notification-service-app:
-    build: .
+    image: khihadysucahyo/notification-service
     environment:
       DB_MONGO_HOST: notification-service-mongo
     ports:
