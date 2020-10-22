@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 
+	controller "github.com/khihadysucahyo/notification-service/controllers"
 	"github.com/khihadysucahyo/notification-service/utils"
 	"github.com/labstack/echo/v4"
 )
@@ -17,11 +18,20 @@ import (
 */
 
 // WEBRoutes route
-func WEBRoutes(e *echo.Echo) {
+func WEBRoutes(e *echo.Echo, c *controller.Controller) {
 	e.GET("/", func(ctx echo.Context) error {
-		return ctx.JSON(http.StatusOK, map[string]interface{}{
-			"APP_NAME": utils.GetEnv("APP_NAME"),
-			"VERSION":  "v0.5",
-		})
+
+		res := map[string]interface{}{
+			"app":     utils.GetEnv("APP_NAME"),
+			"verison": utils.GetEnv("APP_VERSION"),
+		}
+
+		if c.DB == nil {
+			res["errors"] = map[string]string{
+				"mongodb": "Database connection failed.",
+			}
+		}
+
+		return ctx.JSON(http.StatusOK, res)
 	})
 }

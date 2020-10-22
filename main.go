@@ -16,10 +16,7 @@ func main() {
 	// Database connection
 	uri := "mongodb://" + utils.GetEnv("DB_MONGO_HOST") + ":" + utils.GetEnv("DB_MONGO_PORT")
 	fmt.Println(uri)
-	db, err := mgo.Dial(uri)
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
+	db, _ := mgo.Dial(uri)
 
 	// Initializedbconfig
 	c := &controller.Controller{DB: db}
@@ -27,7 +24,7 @@ func main() {
 	// routing
 	apiGroup := e.Group("/api")
 	routes.APIRoutes(apiGroup, c)
-	routes.WEBRoutes(e)
+	routes.WEBRoutes(e, c)
 
 	// listen port
 	e.Logger.Fatal(e.Start(":1213"))
