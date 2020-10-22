@@ -14,7 +14,10 @@ func main() {
 	e := echo.New()
 
 	// Database connection
-	uri := "mongodb://" + utils.GetEnv("DB_MONGO_HOST") + ":" + utils.GetEnv("DB_MONGO_PORT")
+	uri := "mongodb://" + utils.GetEnv("DB_MONGO_HOST") + ":" +
+		utils.GetEnv("DB_MONGO_PORT") + "/" +
+		utils.GetEnv("DB_MONGO_NAME") + "?authSource=admin"
+
 	fmt.Println(uri)
 	db, _ := mgo.Dial(uri)
 
