@@ -1,4 +1,8 @@
 FROM golang:1.13-alpine3.11 as builder
+
+LABEL Maintainer="Khi Hady Sucahyo <khihady.ks@gmail.com>" \
+      Description="Notification service using GO & Firebase."
+
 RUN apk --no-cache add gcc g++ make ca-certificates git
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
