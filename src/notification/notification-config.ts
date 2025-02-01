@@ -1,0 +1,13 @@
+import { CHANNEL_TYPES } from "./channels/channels.constants";
+
+export const NOTIFICATION_TYPES = {
+    LEAVE_BALANCE_REMINDER: 'leave-balance-reminder',
+    MONTHLY_PAYSLIP: 'monthly-payslip',
+    HAPPY_BIRTHDAY: 'happy-birthday',
+};
+
+export const NOTIFICATION_CHANNELS = {
+    [NOTIFICATION_TYPES.LEAVE_BALANCE_REMINDER]: [CHANNEL_TYPES.UI],
+    [NOTIFICATION_TYPES.MONTHLY_PAYSLIP]: [CHANNEL_TYPES.EMAIL],
+    [NOTIFICATION_TYPES.HAPPY_BIRTHDAY]: [CHANNEL_TYPES.UI, CHANNEL_TYPES.EMAIL],
+};
