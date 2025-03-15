@@ -4,8 +4,16 @@ import { User } from './user.interface';
 @Injectable()
 export class UserService {
     mockUsers: Record<string, User> = {
-        'user-1': { id: 'user-1', name: 'Alice', subscriptions: { ui: true, email: true } },
-        'user-2': { id: 'user-2', name: 'Bob', subscriptions: { ui: true, email: false } },
+        'user-1': { 
+            id: 'user-1', 
+            name: 'Alice',
+            subscriptions: { ui: true, email: true } 
+        },
+        'user-2': { 
+            id: 'user-2', 
+            name: 'Bob',
+            subscriptions: { ui: true, email: false } 
+        },
     };
 
     async getAllSubscriptions(userId: string): Promise<Record<string, boolean> | undefined> {
@@ -13,6 +21,14 @@ export class UserService {
             setTimeout(() => {
                 const user = this.mockUsers[userId];
                 resolve(user ? user.subscriptions : undefined);
+            }, 5); // Simulate API call
+        });
+    }
+
+    async getUserData(userId: string): Promise<User | undefined> {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(this.mockUsers[userId]);
             }, 5); // Simulate API call
         });
     }

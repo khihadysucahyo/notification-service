@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ChannelFactoryService } from '../channel-factory/channel-factory.service';
+import { NotificationRepository } from './notification.repository';
+import { TemplateService } from '../templates';
 import { CompanyService } from '../../company/company.service';
 import { UserService } from '../../user/user.service';
-import { NotificationRepository } from './notification.repository';
 
 @Injectable()
 export class NotificationService {
@@ -11,6 +12,7 @@ export class NotificationService {
         private readonly companyService: CompanyService,
         private readonly userService: UserService,
         private readonly notificationRepository: NotificationRepository,
+        private readonly templateService: TemplateService,
     ) {}
 
     private isChannelSubscribed(subscriptions: Record<string, boolean> | undefined, channelType: string): boolean {
@@ -40,6 +42,11 @@ export class NotificationService {
         notificationType: string,
     ) {
         const channels = this.channelFactory.getChannels(notificationType);
+        const compiledTemplate = await this.templateService.getCompiledTemplate(
+            notificationType,
+            companyId,
+            userId
+        );
 
         const [companySubscriptions, userSubscriptions] = await Promise.all([
             this.companyService.getAllSubscriptions(companyId),
@@ -52,7 +59,12 @@ export class NotificationService {
             const userSubscribed = this.isChannelSubscribed(userSubscriptions, channelType);
     
             if (companySubscribed || userSubscribed) {
-                channel.sendNotification({ companyId, userId, notificationType });
+                channel.sendNotification({
+                    companyId,
+                    userId,
+                    notificationType,
+                    template: compiledTemplate[channelType]
+                });
             } else {
                 this.logSkippedNotificationReason(companyId, userId, notificationType, channelType, companySubscriptions);
             }
