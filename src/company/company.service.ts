@@ -19,6 +19,14 @@ export class CompanyService {
         });
     }
 
+    async getCompanyData(companyId: string): Promise<Company | undefined> {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(this.mockCompanies[companyId]);
+            }, 5); // Simulate API call
+        });
+    }
+
     isChannelSubscribed(channel: string): boolean {
         return this.subscriptions[channel];
     }

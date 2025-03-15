@@ -1,5 +1,6 @@
 import { Controller, Body, Param, Get, Post } from '@nestjs/common';
 import { NotificationService } from './notification.service';
+import { SendNotificationDto } from './dto/send-notification.dto';
 
 @Controller('notifications')
 export class NotificationController {
@@ -9,12 +10,14 @@ export class NotificationController {
 
     @Post('send')
     async sendNotification(
-        @Body('companyId') companyId: string,
-        @Body('userId') userId: string,
-        @Body('notificationType') notificationType: string
+        @Body() sendNotificationDto: SendNotificationDto
     ) {
         try {
-            await this.notificationService.sendNotification(companyId, userId, notificationType);
+            await this.notificationService.sendNotification(
+                sendNotificationDto.companyId,
+                sendNotificationDto.userId,
+                sendNotificationDto.notificationType
+            );
             return { message: 'Notification sent successfully.' };
         } catch (error) {
             return { message: 'Failed to send notification.', error: error.message };
@@ -22,13 +25,21 @@ export class NotificationController {
     }
 
     @Get('users/:userId/ui')
-    async getNotifications(
-        @Param('userId') userId: string
-    ) {
+    async getNotifications(@Param('userId') userId: string) {
         try {
-            return await this.notificationService.getUINotificationsByUser(userId);
+            const notifications = await this.notificationService.getUINotificationsByUser(userId);
+            return {
+                success: true,
+                data: notifications,
+                message: 'Notifications retrieved successfully'
+            };
         } catch (error) {
-            return { message: 'Failed to get notifications.', error: error.message };
+            return {
+                success: false,
+                data: null,
+                message: 'Failed to get notifications',
+                error: error.message
+            };
         }
     }
 }
